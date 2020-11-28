@@ -174,8 +174,7 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
 
 @dp.message_handler(commands=["start"], state="*")
 async def creds(message: types.Message):
-    await message.answer("Привет!👋 Это бот для поиска вакансий. Сбрось своё резюме📝, и мы попробуем показать тебе "
-                         "наиболее релевантные вакансии!😉")
+    await message.answer("Привет!👋 Это бот для поиска вакансий. Напиши нам своё Ф.И.О📝")
     await CandidateScreening.waiting_for_creds.set()
 
 
