@@ -11,7 +11,7 @@ from aiogram.types import InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMar
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.utils.markdown import pre
+from aiogram.utils.markdown import pre, code
 
 from test_example import test_example
 
@@ -160,7 +160,7 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
                         f"Выбери вакансию, на которую хотел бы пройти тестирование📚",
                         reply_markup=buttons)
     await message.answer(f"Вот на эти слова обратил внимание наш алгоритм, при анализе твоего резюме:\n" +
-                         pre(f"{', '.join(analyze_result['keywords'])}"),
+                         code(f"{', '.join(analyze_result['keywords'])}"),
                          parse_mode=ParseMode.MARKDOWN)
     keyboard = build_vacancies_keyboard(vacancies)
     await message.answer(text='После того, как выберешь вакансию, '
