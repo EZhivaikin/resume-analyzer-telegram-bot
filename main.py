@@ -146,8 +146,8 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
         )
 
         url = f"{resume_analyzer_api}{get_vacancies_route}"
-        vacancies = await async_request_json(url, "POST", data={'resume': resume_file})
-        vacancies = vacancies['vacancies']
+        analyze_result = await async_request_json(url, "POST", data={'resume': resume_file})
+        vacancies = analyze_result['vacancies']
     except Exception as e:
         print(str(e))
         await message.reply("❗️Произошла какая-то ошибка с анализатором😢 Мы уже решаем эту проблему!🛠 Попробуйте "
@@ -159,7 +159,7 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
                         f"Выбери вакансию, на которую хотел бы пройти тестирование📚",
                         reply_markup=buttons)
     await message.answer(f"Вот на эти слова обратил внимание наш алгоритм, при анализе твоего резюме:"
-                         f"{' '.join(vacancies['keywords'])}")
+                         f"{' '.join(analyze_result['keywords'])}")
     keyboard = build_vacancies_keyboard(vacancies)
     await message.answer(text='После того, как выберешь вакансию, '
                               'нажми на одну из кнопок чтобы начать тестирование.✍️',
