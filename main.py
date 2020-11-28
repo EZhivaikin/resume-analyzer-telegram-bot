@@ -286,7 +286,7 @@ async def answer_question(message: types.Message, state: FSMContext):
         await send_answers(state)
         await CandidateScreening.waiting_for_resume.set()
         await state.update_data(test=[], candidate_answers=[], available_vacancies=[])
-        await message.answer('Если хочешь еще получить еще выборку вакансий, отправь нам резюме📨')
+        await message.answer('Если хочешь получить еще одну выборку вакансий, отправь нам резюме📨')
         return
 
     current_question_number += 1
