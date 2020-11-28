@@ -19,7 +19,7 @@ bot = Bot(token="1308187367:AAEtB3yFALotsg9RwLBBkGfVv2MRl2a1yWw")
 dp = Dispatcher(bot, storage=MemoryStorage())
 dp.middleware.setup(LoggingMiddleware())
 
-resume_analyzer_api = "https://resume-analyzer-api.herokuapp.com"
+resume_analyzer_api = "https://lod-resume-analyze.herokuapp.com"
 get_vacancies_route = "/get-relevant-vacancies"
 
 vacancies_api = "https://employee-recruiting-api.herokuapp.com"
