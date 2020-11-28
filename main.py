@@ -51,7 +51,7 @@ def build_readiness_buttons():
 
 
 def build_answers_buttons(answers: List[str]):
-    kb = ReplyKeyboardMarkup(one_time_keyboard=True)
+    kb = ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
     keys_list = (
         KeyboardButton(answer)
         for answer in answers
