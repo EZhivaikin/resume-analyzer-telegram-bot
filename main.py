@@ -153,7 +153,7 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
         await message.reply("❗️Произошла какая-то ошибка с анализатором😢 Мы уже решаем эту проблему!🛠 Попробуйте "
                             "позже🤓")
         return
-
+    print(analyze_result['keywords'])
     buttons = build_vacancies_buttons(vacancies)
     await message.reply(f"А вот и твои вакансии подъехали!📨 "
                         f"Выбери вакансию, на которую хотел бы пройти тестирование📚",
