@@ -46,7 +46,7 @@ def build_vacancies_keyboard(vacancies):
 
 def build_readiness_buttons():
     kb = ReplyKeyboardMarkup(one_time_keyboard=True)
-    kb.add(KeyboardButton("Начать тестирование"))
+    kb.add(KeyboardButton("Начать тестирование✍️"))
     return kb
 
 
@@ -150,17 +150,18 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
         vacancies = vacancies['vacancies']
     except Exception as e:
         print(str(e))
-        await message.reply("Произошла какая-то ошибка с анализатором :(\n"
-                            "Мы уже решаем эту проблему! Попробуйте позже.")
+        await message.reply("❗️Произошла какая-то ошибка с анализатором😢 Мы уже решаем эту проблему!🛠 Попробуйте "
+                            "позже🤓")
         return
 
     buttons = build_vacancies_buttons(vacancies)
-    await message.reply(f"А вот и твои вакансии подъехали! \n"
-                        f'Выбери вакансию, на которую хотел бы пройти тестирование',
+    await message.reply(f"А вот и твои вакансии подъехали!📨 "
+                        f"Выбери вакансию, на которую хотел бы пройти тестирование📚",
                         reply_markup=buttons)
     keyboard = build_vacancies_keyboard(vacancies)
-    await message.answer(text='После того, как выберешь вакансию,'
-                              ' нажми на одну из кнопок чтобы начать тестирование.', reply_markup=keyboard)
+    await message.answer(text='После того, как выберешь вакансию, '
+                              'нажми на одну из кнопок чтобы начать тестирование.✍️',
+                         reply_markup=keyboard)
     await state.update_data(available_vacancies=[
         dict(
             title=vacancy['title'],
@@ -173,18 +174,18 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
 
 @dp.message_handler(commands=["start"], state="*")
 async def creds(message: types.Message):
-    await message.answer("Привет! Это бот для поиска вакансий Газпромбанка. "
-                         "Напиши своё ФИО пожалуйста.")
+    await message.answer("Привет!👋 Это бот для поиска вакансий. Сбрось своё резюме📝, и мы попробуем показать тебе "
+                         "наиболее релевантные вакансии!😉")
     await CandidateScreening.waiting_for_creds.set()
 
 
 @dp.message_handler(state=CandidateScreening.waiting_for_creds)
 async def vacancies(message: types.Message, state: FSMContext):
     if len(message.text) < 1:
-        await message.answer("Введите своё ФИО.")
+        await message.answer("Введите своё ФИО 🤓")
         return
     await state.update_data(creds=dict(name=message.text, telegram=message.from_user.url))
-    await message.answer("Отлично! Сбрось своё резюме, и мы попробуем показать тебе наиболее релевантные вакансии!")
+    await message.answer("Отлично!👍 Сбрось своё резюме, и мы попробуем показать тебе наиболее релевантные вакансии!😉")
     await CandidateScreening.waiting_for_resume.set()
     return
 
@@ -199,22 +200,21 @@ async def resume_doc(message: types.Message, state: FSMContext):
         resume_file: io.BytesIO = await bot.download_file(file_path)
     except Exception as e:
         print(str(e))
-        await message.reply("Кажется, что-то не так с файлом :(\n"
-                            "Попробуй скинуть в формате txt!")
+        await message.reply("Кажется, что-то не так с файлом 🤯 Попробуй скинуть в формате txt!📄")
         return
 
     file = document.file_name.split('.')
     filename = file[0]
     fileextension = file[1] if len(file) > 1 else 'txt'
 
-    await message.reply("Файл принят! Подожди немного :)")
+    await message.reply("Файл принят!👍 Подожди немного⏳")
     await process_resume(resume_file, message, state, filename=filename, fileextension=fileextension)
 
 
 @dp.message_handler(content_types=types.ContentTypes.TEXT, state=CandidateScreening.waiting_for_resume)
 async def resume_text(message: types.Message, state: FSMContext):
     resume_file = io.BytesIO(message.text.encode())
-    await message.reply("Резюме принято! Подожди немного :)")
+    await message.reply("Резюме принято! ✅ Подожди немного⏳")
     await process_resume(resume_file, message, state)
 
 
@@ -225,8 +225,7 @@ async def choose_test(message: types.Message, state: FSMContext):
     available_vacancies = sm_data['available_vacancies']
     test_names = [test['title'] for test in available_vacancies]
     if chosen_vacancy_name not in test_names:
-        await message.reply('Кажется, ты написал что-то не то :( \n'
-                            'Нажми на одну из кнопок на клавиатуре.')
+        await message.reply('❗️Кажется, ты написал что-то не то😢 Нажми на одну из кнопок на клавиатуре.☝️')
         return
 
     chosen_vacancy = list(filter(lambda x: x['title'] == chosen_vacancy_name, available_vacancies))[0]
@@ -234,8 +233,8 @@ async def choose_test(message: types.Message, state: FSMContext):
     test_id, questions = await load_screening(chosen_vacancy['id'])
     await state.update_data(test=questions, vacancy_id=chosen_vacancy['id'], screening_test_id=test_id)
     readiness_keyboard = build_readiness_buttons()
-    await message.reply('Супер! Нажми "Начать тестирование" когда будешь готов сдавать тест!\n'
-                        'Имей ввиду, что время прохождения тестирования тоже будет учитываться.',
+    await message.reply('Отличный выбор!👍 Нажми "Начать тестирование" когда будешь готов сдавать тест!✔️ \n'
+                        '❗️Имей ввиду, что время прохождения тестирования тоже будет учитываться.⏳',
                         reply_markup=readiness_keyboard)
     await CandidateScreening.waiting_for_readiness.set()
 
@@ -243,10 +242,10 @@ async def choose_test(message: types.Message, state: FSMContext):
 @dp.message_handler(state=CandidateScreening.waiting_for_readiness, content_types=types.ContentTypes.TEXT)
 async def start_test(message: types.Message, state: FSMContext):
     answer = message.text
-    if answer != "Начать тестирование":
+    if answer != "Начать тестирование✍️":
         return
 
-    await message.answer('Окей, начинаем!')
+    await message.answer('Окей, начинаем!😉')
     await CandidateScreening.waiting_for_answers.set()
     await state.update_data(
         data=dict(
@@ -270,7 +269,7 @@ async def answer_question(message: types.Message, state: FSMContext):
     available_answers = state_data['test'][current_question_number]['answers']
 
     if answer not in [text['text'] for text in available_answers]:
-        await message.reply('Выбери один из ответов с клавиатуры :)')
+        await message.reply('Выбери один из ответов с клавиатуры 📲')
         return
 
     candidate_answer = list(filter(lambda x: x['text'] == answer, available_answers))[0]
@@ -281,11 +280,14 @@ async def answer_question(message: types.Message, state: FSMContext):
 
     questions_count = len(state_data['test'])
     if (questions_count - 1) == current_question_number:
-        await message.answer('Тестирование окончено! Спасибо за уделенное нам время!')
+        await message.answer('Тестирование окончено!👍 Спасибо за уделенное нам время!😊✌️')
         await state.update_data(end_date=datetime.now())
         candidate_id = (await create_candidate(state))['data']['id']
         await state.update_data(candidate_id=candidate_id)
         await send_answers(state)
+        await CandidateScreening.waiting_for_resume.set()
+        await state.update_data(test=[], candidate_answers=[], available_vacancies=[])
+        await message.answer('Если хочешь еще получить еще выборку вакансий, отправь нам резюме📨')
         return
 
     current_question_number += 1
