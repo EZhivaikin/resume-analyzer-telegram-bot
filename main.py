@@ -158,7 +158,6 @@ async def process_resume(resume_file, message, state, filename='textfile', filee
     await message.reply(f"А вот и твои вакансии подъехали!📨 "
                         f"Выбери вакансию, на которую хотел бы пройти тестирование📚",
                         reply_markup=buttons)
-    await message.answer(f"Вот на эти слова обратил внимание наш алгоритм, при анализе твоего резюме:")
     await message.answer(f"{' '.join(analyze_result['keywords'])}")
     keyboard = build_vacancies_keyboard(vacancies)
     await message.answer(text='После того, как выберешь вакансию, '
